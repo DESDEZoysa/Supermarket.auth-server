@@ -1,0 +1,25 @@
+server:
+  port:
+    9080
+
+spring:
+  application:
+    name:
+      auth_server
+    security:
+      jwt:
+        secret-key: mgxkYkMW829scNrW8AzGLqG1xFQFFkeLdvdvv23423432bbrgtbtrgb342423
+        token-expiration:
+          access:
+            600000
+  datasource:
+    username:
+      postgres
+    password:
+      admin
+    url:
+      jdbc:postgresql://localhost:5432/supermarket
+  jpa:
+    hibernate:
+      ddl-auto:
+        update
