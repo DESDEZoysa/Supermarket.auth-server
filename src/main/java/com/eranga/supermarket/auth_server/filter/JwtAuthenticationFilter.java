@@ -1,4 +1,4 @@
-package com.eranga.supermarket.auth_server.config;
+package com.eranga.supermarket.auth_server.filter;
 
 import com.eranga.supermarket.auth_server.service.JwtService;
 import jakarta.servlet.FilterChain;
@@ -18,7 +18,7 @@ import java.io.IOException;
 
 @Component
 @RequiredArgsConstructor
-public class JwtAuthenticationFilterConfig extends OncePerRequestFilter {
+public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final JwtService jwtService;
     private final UserDetailsService userDetailsService;

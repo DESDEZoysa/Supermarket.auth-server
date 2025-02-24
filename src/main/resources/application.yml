@@ -1,12 +1,18 @@
 server:
   port:
     9080
+  address:
+    127.0.0.1
 
 spring:
   application:
     name:
       auth_server
     security:
+      recaptcha:
+        verifyUrl:
+          https://www.google.com/recaptcha/api/siteverify
+        secretKey: mgxkYkMW829scNrW8AzGLqG1xFQFFkeLdvdvv23423432bbrgtbtrgb@q$%er
       jwt:
         secret-key: mgxkYkMW829scNrW8AzGLqG1xFQFFkeLdvdvv23423432bbrgtbtrgb342423
         token-expiration:

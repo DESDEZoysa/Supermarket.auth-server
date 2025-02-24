@@ -1,5 +1,8 @@
 package com.eranga.supermarket.auth_server.config;
 
+import com.eranga.supermarket.auth_server.filter.JwtAuthenticationFilter;
+import com.eranga.supermarket.auth_server.filter.RateLimitFilter;
+import com.eranga.supermarket.auth_server.filter.RecaptchaFilter;
 import com.eranga.supermarket.auth_server.service.impl.AppUserDetailsService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -23,7 +26,9 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfig {
 
     private final AppUserDetailsService userDetailsService;
-    private final JwtAuthenticationFilterConfig jwtAuthenticationFilterConfig;
+    private final JwtAuthenticationFilter jwtAuthenticationFilter;
+    private final RateLimitFilter rateLimitFilter;
+    private final RecaptchaFilter recaptchaFilter;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
@@ -36,7 +41,9 @@ public class SecurityConfig {
                 .httpBasic(Customizer.withDefaults())
                 .sessionManagement(session->
                         session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .addFilterBefore(jwtAuthenticationFilterConfig, UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
+                .addFilterAfter(recaptchaFilter, UsernamePasswordAuthenticationFilter.class)
+                .addFilterAfter(rateLimitFilter, RecaptchaFilter.class)
 //                .oauth2Client(Customizer.withDefaults())
                 .build();
     }
