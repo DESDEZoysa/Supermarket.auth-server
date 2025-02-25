@@ -19,25 +19,6 @@ public class AuthenticationController {
 
     private final AuthenticationService authenticationService;
 
-    private List<String> itemList = new ArrayList<>();
-
-    @GetMapping
-    public List<String> getItemList(){
-        return itemList;
-    }
-
-    @GetMapping("/SRFToken")
-    public CsrfToken getCSRFToken(HttpServletRequest request){
-        return (CsrfToken) request.getAttribute("_csrf");
-    }
-
-    @PostMapping
-    public String addItem(@RequestBody String item){
-        this.itemList.add(item);
-        return item;
-    }
-
-
     @PostMapping("/register")
     public AuthenticationDto register(@RequestBody AppUserDto appUserDto) {
         return this.authenticationService.register(appUserDto);
