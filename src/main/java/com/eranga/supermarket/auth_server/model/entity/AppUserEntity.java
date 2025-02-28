@@ -22,5 +22,6 @@ public class AppUserEntity {
     @Column(name = "password", nullable = false, unique = true)
     private String password;
     @Enumerated(EnumType.STRING)
+    @Column(name = "user_role", nullable = false)
     private UserRoleEnum userRole;
 }

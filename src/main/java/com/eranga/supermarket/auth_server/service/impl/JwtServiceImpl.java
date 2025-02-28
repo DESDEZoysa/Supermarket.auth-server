@@ -1,5 +1,6 @@
 package com.eranga.supermarket.auth_server.service.impl;
 
+import com.eranga.supermarket.auth_server.model.dto.AppUserDto;
 import com.eranga.supermarket.auth_server.service.JwtService;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -25,9 +26,10 @@ public class JwtServiceImpl implements JwtService {
     @Value("${spring.application.security.jwt.secret-key}")
     private String secretKey;
 
-    public String generateAccessToken(String username) {
+    public String generateAccessToken(AppUserDto appUserDto) {
         Map<String, Object> claims = new HashMap<>();
-        return buildToken(claims,username,this.accessTokenExpiration);
+        claims.put("userId", appUserDto.getId());
+        return buildToken(claims,appUserDto.getUserName(),this.accessTokenExpiration);
     }
 
     public String extractUserName(String jwtToken){

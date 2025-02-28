@@ -1,16 +1,10 @@
 package com.eranga.supermarket.auth_server.controller;
 
-import com.eranga.supermarket.auth_server.model.dto.LoginDetailsDto;
 import com.eranga.supermarket.auth_server.model.dto.AppUserDto;
 import com.eranga.supermarket.auth_server.model.dto.AuthenticationDto;
 import com.eranga.supermarket.auth_server.service.AuthenticationService;
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.web.csrf.CsrfToken;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @RestController
 @RequestMapping("auth")
@@ -25,7 +19,7 @@ public class AuthenticationController {
     }
 
     @PostMapping("/login")
-    public AuthenticationDto authenticate(@RequestBody LoginDetailsDto loginDetailsDto) {
-        return authenticationService.authenticate(loginDetailsDto);
+    public AuthenticationDto authenticate(@RequestBody AppUserDto appUserDto) {
+        return authenticationService.authenticate(appUserDto);
     }
 }

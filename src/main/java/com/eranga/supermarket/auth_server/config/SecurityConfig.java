@@ -3,10 +3,12 @@ package com.eranga.supermarket.auth_server.config;
 import com.eranga.supermarket.auth_server.filter.JwtAuthenticationFilter;
 import com.eranga.supermarket.auth_server.filter.RateLimitFilter;
 import com.eranga.supermarket.auth_server.filter.RecaptchaFilter;
+import com.eranga.supermarket.auth_server.model.AppEnum.UserRoleEnum;
 import com.eranga.supermarket.auth_server.service.impl.AppUserDetailsService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -27,23 +29,26 @@ public class SecurityConfig {
 
     private final AppUserDetailsService userDetailsService;
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
-    private final RateLimitFilter rateLimitFilter;
-    private final RecaptchaFilter recaptchaFilter;
+//    private final RateLimitFilter rateLimitFilter;
+//    private final RecaptchaFilter recaptchaFilter;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
         return httpSecurity.
                 csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(request->request
-                        .requestMatchers("/auth/register", "/auth/login")
-                        .permitAll()
+                        .requestMatchers("/auth/register", "/auth/login").permitAll()
+                        .requestMatchers("/admin/**").hasRole(UserRoleEnum.ADMIN.toString())
+                        .requestMatchers("/manager/**").hasAnyRole(UserRoleEnum.ADMIN.toString(), UserRoleEnum.MANAGER.toString())
+                        .requestMatchers(HttpMethod.DELETE,"/admin/**").hasRole(UserRoleEnum.SUPER_ADMIN.toString())
+                        .requestMatchers(HttpMethod.DELETE, "/**").hasRole(UserRoleEnum.ADMIN.toString())
                         .anyRequest().authenticated())
                 .httpBasic(Customizer.withDefaults())
                 .sessionManagement(session->
                         session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
-                .addFilterAfter(recaptchaFilter, UsernamePasswordAuthenticationFilter.class)
-                .addFilterAfter(rateLimitFilter, RecaptchaFilter.class)
+//                .addFilterAfter(recaptchaFilter, UsernamePasswordAuthenticationFilter.class)
+//                .addFilterAfter(rateLimitFilter, RecaptchaFilter.class)
 //                .oauth2Client(Customizer.withDefaults())
                 .build();
     }

@@ -1,6 +1,5 @@
 package com.eranga.supermarket.auth_server.service.impl;
 
-import com.eranga.supermarket.auth_server.model.dto.LoginDetailsDto;
 import com.eranga.supermarket.auth_server.model.dto.AppUserDto;
 import com.eranga.supermarket.auth_server.model.dto.AuthenticationDto;
 import com.eranga.supermarket.auth_server.model.mapper.AppUserMapper;
@@ -29,14 +28,14 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     public AuthenticationDto register(AppUserDto appUserDto) {
         appUserDto.setPassword(this.bCryptPasswordEncoder.encode(appUserDto.getPassword()));
         this.appUserRepository.save(appUserMapper.mapDtoToEntity(appUserDto));
-        return this.authenticationDtoMapper.mapAuthenticationDto(appUserDto.getUserName());
+        return this.authenticationDtoMapper.mapAuthenticationDto(appUserDto);
     }
 
     @Override
-    public AuthenticationDto authenticate(LoginDetailsDto loginDetailsDto) {
+    public AuthenticationDto authenticate(AppUserDto appUserDto) {
         authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(loginDetailsDto.getUserName(),loginDetailsDto.getPassword()));
-        return this.authenticationDtoMapper.mapAuthenticationDto(loginDetailsDto.getUserName());
+                new UsernamePasswordAuthenticationToken(appUserDto.getUserName(),appUserDto.getPassword()));
+        return this.authenticationDtoMapper.mapAuthenticationDto(appUserDto);
     }
 
     @Override
