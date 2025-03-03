@@ -23,6 +23,11 @@ public class UserController {
         return "Post User";
     }
 
+    @PutMapping()
+    public String putUser(){
+        return "Put User";
+    }
+
     @DeleteMapping()
     public String deleteUser(){
         return "Delete User";

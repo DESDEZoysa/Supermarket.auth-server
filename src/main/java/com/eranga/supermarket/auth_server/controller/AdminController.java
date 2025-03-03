@@ -1,5 +1,7 @@
 package com.eranga.supermarket.auth_server.controller;
 
+import com.eranga.supermarket.auth_server.model.entity.SecurityDetailsEntity;
+import com.eranga.supermarket.auth_server.repository.SecurityDetailsRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -7,6 +9,8 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("admin")
 @RequiredArgsConstructor
 public class AdminController {
+
+    private final SecurityDetailsRepository securityDetailsRepository;
 
     @GetMapping()
     public String getAdmin(){
@@ -21,6 +25,17 @@ public class AdminController {
     @PostMapping()
     public String postAdmin(){
         return "Post Admin";
+    }
+
+    @PostMapping("/addSecurityDetails")
+    public String AddSecurityDetails(){
+        securityDetailsRepository.save(SecurityDetailsEntity.builder().key("scwfedfwe").build());
+        return "Post AddSecurityDetails";
+    }
+
+    @PutMapping()
+    public String putAdmin(){
+        return "Put Admin";
     }
 
     @DeleteMapping()

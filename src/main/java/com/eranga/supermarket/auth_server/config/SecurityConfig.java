@@ -3,6 +3,7 @@ package com.eranga.supermarket.auth_server.config;
 import com.eranga.supermarket.auth_server.filter.JwtAuthenticationFilter;
 import com.eranga.supermarket.auth_server.filter.RateLimitFilter;
 import com.eranga.supermarket.auth_server.filter.RecaptchaFilter;
+import com.eranga.supermarket.auth_server.model.AppEnum.PermissionEnum;
 import com.eranga.supermarket.auth_server.model.AppEnum.UserRoleEnum;
 import com.eranga.supermarket.auth_server.service.impl.AppUserDetailsService;
 import lombok.RequiredArgsConstructor;
@@ -14,6 +15,7 @@ import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -24,6 +26,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 @Configuration
 @EnableWebSecurity
+@EnableMethodSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
 
@@ -34,14 +37,19 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
+        System.out.println("securityFilterChain");
         return httpSecurity.
                 csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(request->request
-                        .requestMatchers("/auth/register", "/auth/login").permitAll()
-                        .requestMatchers("/admin/**").hasRole(UserRoleEnum.ADMIN.toString())
-                        .requestMatchers("/manager/**").hasAnyRole(UserRoleEnum.ADMIN.toString(), UserRoleEnum.MANAGER.toString())
-                        .requestMatchers(HttpMethod.DELETE,"/admin/**").hasRole(UserRoleEnum.SUPER_ADMIN.toString())
-                        .requestMatchers(HttpMethod.DELETE, "/**").hasRole(UserRoleEnum.ADMIN.toString())
+                        .requestMatchers( "/auth/login","/auth/register").permitAll()
+                        .requestMatchers(HttpMethod.DELETE,"/admin/**").hasAuthority(PermissionEnum.ADMIN_DELETE.name())
+                        .requestMatchers(HttpMethod.POST,"/admin/**").hasAuthority(PermissionEnum.ADMIN_CREATE.name())
+                        .requestMatchers(HttpMethod.PUT,"/admin/**").hasAuthority(PermissionEnum.ADMIN_UPDATE.name())
+                        .requestMatchers(HttpMethod.DELETE,"/**").hasAnyAuthority(PermissionEnum.DELETE.name())
+                        .requestMatchers(HttpMethod.PUT,"/**").hasAnyAuthority(PermissionEnum.UPDATE.name())
+                        .requestMatchers(HttpMethod.POST,"/**").hasAnyAuthority(PermissionEnum.CREATE.name())
+                        .requestMatchers("/admin/**").hasAnyRole(UserRoleEnum.SUPER_ADMIN.name(),UserRoleEnum.ADMIN.name())
+                        .requestMatchers("/manager/**").hasAnyRole(UserRoleEnum.SUPER_ADMIN.name(),UserRoleEnum.ADMIN.name(), UserRoleEnum.MANAGER.name())
                         .anyRequest().authenticated())
                 .httpBasic(Customizer.withDefaults())
                 .sessionManagement(session->

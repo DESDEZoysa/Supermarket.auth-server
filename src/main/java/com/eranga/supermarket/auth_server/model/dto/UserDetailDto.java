@@ -18,7 +18,8 @@ public class UserDetailDto implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(new SimpleGrantedAuthority("ROLE_"+this.appUserEntity.getUserRole().name()));
+        return this.appUserEntity.getUserRole().getAuthorities();
+//        return List.of(new SimpleGrantedAuthority("ROLE_"+this.appUserEntity.getUserRole().name()));
     }
 
     @Override

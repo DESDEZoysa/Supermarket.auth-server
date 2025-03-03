@@ -23,6 +23,11 @@ public class ManagerController {
         return "Post Manager";
     }
 
+    @PutMapping()
+    public String putManager(){
+        return "Put Manager";
+    }
+
     @DeleteMapping()
     public String deleteManager(){
         return "Delete Manager";
